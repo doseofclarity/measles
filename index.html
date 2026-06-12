@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measles (Rubeola) Study Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
+        
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .group:hover .group-hover\:rotate-y-180 { transform: rotateY(180deg); }
+        
+        .recall-mode .reveal-text {
+            background-color: #cbd5e1; /* Slate-300 */
+            color: transparent;
+            border-radius: 4px;
+            padding: 0 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s, color 0.3s;
+            text-shadow: none;
+            box-shadow: inset 0 0 0 1px #94a3b8;
+        }
+        .recall-mode .reveal-text:hover, .recall-mode .reveal-text.revealed {
+            background-color: #fde047; /* Yellow-300 */
+            color: #1e293b; /* Slate-800 */
+            box-shadow: none;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(244, 63, 94, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(225, 29, 72, 0.8); }
+
+        .content-section { animation: fadeIn 0.4s ease-in-out; }
+        .locked-section { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        theme: {
+                            light: '#fff1f2', /* Rose-50 */
+                            DEFAULT: '#f43f5e', /* Rose-500 */
+                            dark: '#be123c', /* Rose-700 */
+                            accent: '#fbbf24', /* Amber-400 */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col md:flex-row font-sans text-slate-800 overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-theme-dark text-white p-4 flex justify-between items-center shadow-md z-20 shrink-0">
+        <h1 class="font-bold text-lg"><i class="fa-solid fa-virus mr-2 text-theme-accent"></i> Measles (Rubeola)</h1>
+        <button onclick="toggleMobileMenu()" class="text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-72 bg-white shadow-2xl h-full absolute md:relative z-30 transition-transform duration-300 shrink-0 border-r border-slate-200">
+        <div class="p-6 bg-gradient-to-br from-slate-900 to-theme-dark text-white hidden md:block shrink-0">
+            <h1 class="font-black text-2xl tracking-wide"><i class="fa-solid fa-virus text-theme-accent mr-2"></i> PHN Review</h1>
+            <p class="text-sm text-rose-100 mt-1 font-medium">Measles (Rubeola) Module</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 text-sm font-medium">
+                <li><button onclick="showSection('home')" id="btn-home" class="nav-btn w-full text-left px-6 py-3 bg-theme-light text-theme-dark border-r-4 border-theme-dark transition-colors"><i class="fa-solid fa-house w-6 nav-icon"></i><i class="fa-solid fa-lock w-6 hidden text-slate-400"></i> Module Overview</button></li>
+                <li><button onclick="showSection('intro')" id="btn-intro" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-microscope w-6 nav-icon hidden text-rose-500"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Agent & Transmission</button></li>
+                <li><button onclick="showSection('clinical')" id="btn-clinical" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-temperature-high w-6 nav-icon hidden text-orange-500"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Clinical Manifestations</button></li>
+                <li><button onclick="showSection('complications')" id="btn-complications" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-triangle-exclamation w-6 nav-icon hidden text-red-600"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Complications</button></li>
+                <li><button onclick="showSection('prevention')" id="btn-prevention" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-syringe w-6 nav-icon hidden text-teal-500"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Prevention & Nursing Care</button></li>
+                <li><button onclick="showSection('final_quiz_sec')" id="btn-final_quiz_sec" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors border-t border-slate-200 mt-2 locked-section"><i class="fa-solid fa-trophy w-6 text-amber-500 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Final Checkpoint</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-full overflow-y-auto bg-slate-100 relative w-full">
+        
+        <!-- Floating Active Recall Toggle -->
+        <div class="fixed top-4 right-4 md:right-8 z-40 flex items-center bg-white/90 backdrop-blur px-4 py-3 rounded-full shadow-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleRecallMode()">
+            <span class="mr-3 text-sm font-bold text-slate-700 hidden md:inline"><i class="fa-solid fa-brain text-theme-accent mr-1"></i> Active Recall</span>
+            <span class="mr-3 text-sm font-bold text-slate-700 md:hidden"><i class="fa-solid fa-brain text-theme-accent"></i></span>
+            <button id="recall-toggle" class="w-12 h-6 bg-slate-300 rounded-full relative transition-colors duration-300 focus:outline-none shadow-inner pointer-events-none">
+                <div id="recall-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform duration-300 shadow"></div>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 max-w-6xl mx-auto pb-32">
+
+            <!-- OVERVIEW SECTION -->
+            <section id="home" class="content-section flex flex-col items-center justify-center min-h-[80vh] text-center block">
+                <div class="bg-gradient-to-br from-slate-900 via-rose-900 to-theme-dark text-white rounded-3xl shadow-2xl p-10 md:p-16 w-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white opacity-5 pointer-events-none">
+                        <i class="fa-solid fa-viruses text-[20rem]"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 backdrop-blur-sm inline-block p-4 rounded-full text-theme-accent mb-6 shadow-sm border border-white/20">
+                            <i class="fa-solid fa-virus text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-rose-200 mb-2 uppercase tracking-widest">Communicable Diseases</h3>
+                        <h1 class="text-5xl md:text-7xl font-black text-white mb-6 leading-tight drop-shadow-md">
+                            Measles<br/><span class="text-3xl md:text-5xl text-rose-300">(Rubeola)</span>
+                        </h1>
+                        <div class="bg-white/10 backdrop-blur inline-block px-6 py-3 rounded-full mb-10 border border-white/20">
+                            <p class="text-lg text-white font-medium">"Highly contagious, but entirely preventable."</p>
+                        </div>
+                        <br/>
+                        <button onclick="unlockFirstSection()" class="bg-theme-accent hover:bg-amber-300 text-slate-900 font-black py-4 px-10 rounded-full shadow-xl transition-transform hover:scale-105 text-lg flex items-center mx-auto focus:outline-none">
+                            Start Module <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AGENT & TRANSMISSION -->
+            <section id="intro" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 flex items-center border-b-2 border-rose-500 pb-3">
+                        <i class="fa-solid fa-microscope text-rose-500 mr-4"></i> Agent & Transmission
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-rose-50 border border-rose-100 p-5 rounded-xl shadow-sm">
+                            <h3 class="text-xl font-bold text-rose-900 mb-3 border-b border-rose-200 pb-2">The Agent</h3>
+                            <ul class="space-y-3 text-slate-700 font-medium">
+                                <li><i class="fa-solid fa-bug text-rose-400 mr-2"></i> <strong>Pathogen:</strong> <span class="reveal-text font-bold text-rose-700">Paramyxovirus</span> (RNA virus)</li>
+                                <li><i class="fa-solid fa-book-medical text-rose-400 mr-2"></i> <strong>Also known as:</strong> Rubeola, "Hard measles", "Red measles"</li>
+                                <li><i class="fa-solid fa-clock text-rose-400 mr-2"></i> <strong>Incubation Period:</strong> <span class="reveal-text font-bold">10 to 14 days</span></li>
+                                <li><i class="fa-solid fa-calendar-xmark text-rose-400 mr-2"></i> <strong>Period of Communicability:</strong> <span class="reveal-text font-bold">4 days before</span> to <span class="reveal-text font-bold">4 days after</span> the appearance of the rash.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm flex flex-col justify-center">
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 border-b border-slate-200 pb-2">Transmission Dynamics</h3>
+                            <p class="text-slate-700 mb-3">Measles is one of the most highly contagious infectious diseases known to man.</p>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-inner space-y-2">
+                                <p class="text-sm font-bold text-rose-600"><i class="fa-solid fa-wind mr-1"></i> Airborne Transmission</p>
+                                <p class="text-xs text-slate-600">Spread primarily via microscopic aerosolized droplets that remain active and contagious in the air or on infected surfaces for up to <span class="reveal-text font-bold text-slate-800">2 hours</span>.</p>
+                            </div>
+                            <div class="bg-white p-3 mt-2 rounded-lg border border-slate-200 shadow-inner space-y-2">
+                                <p class="text-sm font-bold text-rose-600"><i class="fa-solid fa-droplet mr-1"></i> Direct Contact</p>
+                                <p class="text-xs text-slate-600">Also spread by direct contact with infected respiratory secretions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-400 mb-8">
+                        <p class="text-amber-900 font-medium">
+                            <i class="fa-solid fa-triangle-exclamation mr-2"></i> <strong>Clinical Pearl:</strong> Measles vs. German Measles. 
+                            <strong>Measles (Rubeola)</strong> is caused by the Paramyxovirus and is severe ("hard measles"). 
+                            <strong>German Measles (Rubella)</strong> is caused by the Togavirus and is generally milder ("3-day measles"), but poses severe teratogenic risks to pregnant women.
+                        </p>
+                    </div>
+
+                    <button onclick="openQuiz('intro')" class="w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-theme-accent"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- CLINICAL MANIFESTATIONS -->
+            <section id="clinical" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 flex items-center border-b-2 border-orange-500 pb-3">
+                        <i class="fa-solid fa-temperature-high text-orange-500 mr-4"></i> Clinical Manifestations
+                    </h2>
+
+                    <p class="text-lg text-slate-600 mb-6 font-medium">The clinical course of measles is typically divided into distinct stages. Recognizing these early is crucial for isolation and management.</p>
+
+                    <div class="space-y-6 mb-10">
+                        <!-- Prodromal Stage -->
+                        <div class="bg-orange-50 border-t-4 border-orange-500 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-xl font-black text-orange-900 mb-2">1. Pre-eruptive / Prodromal Stage</h3>
+                            <p class="text-sm text-orange-800 mb-4">Lasts 3-4 days before the rash appears. The patient is highly contagious here.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+                                    <h4 class="font-bold text-slate-800 mb-2">The "3 C's" & High Fever</h4>
+                                    <ul class="space-y-1 text-sm text-slate-700 list-disc pl-5">
+                                        <li>High fever (can spike >40°C / 104°F)</li>
+                                        <li><span class="reveal-text font-bold text-red-600">C</span>ough (usually dry, hacking)</li>
+                                        <li><span class="reveal-text font-bold text-red-600">C</span>oryza (runny nose)</li>
+                                        <li><span class="reveal-text font-bold text-red-600">C</span>onjunctivitis (red, watery eyes; photophobia)</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-rose-200 shadow-sm border-l-4 border-l-rose-500">
+                                    <h4 class="font-bold text-rose-700 mb-2">Pathognomonic Sign</h4>
+                                    <p class="text-xl font-black text-slate-800 mb-1"><span class="reveal-text">Koplik Spots</span></p>
+                                    <p class="text-xs text-slate-600 leading-relaxed">
+                                        Tiny bluish-white spots with red halos found on the <span class="reveal-text font-bold">buccal mucosa</span> (inside the cheeks, opposite the molars). They appear 1-2 days before the rash and fade as the rash erupts.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Eruptive Stage -->
+                        <div class="bg-rose-50 border-t-4 border-rose-500 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-xl font-black text-rose-900 mb-2">2. Eruptive Stage (The Rash)</h3>
+                            <p class="text-sm text-slate-700 mb-3">Characterized by a <span class="reveal-text font-bold">maculopapular rash</span> (flat red areas covered with small confluent bumps).</p>
+                            <ul class="space-y-2 text-sm text-slate-700 bg-white p-4 rounded-lg border border-rose-100">
+                                <li><i class="fa-solid fa-arrow-down-long text-rose-400 mr-2"></i> <strong>Direction:</strong> Spreads <span class="reveal-text font-bold text-rose-700">Cephalocaudally</span> (from head to toe).</li>
+                                <li><i class="fa-solid fa-play text-rose-400 mr-2"></i> <strong>Starts:</strong> Behind the ears, on the hairline, and upper neck.</li>
+                                <li><i class="fa-solid fa-arrows-turn-to-dots text-rose-400 mr-2"></i> <strong>Progression:</strong> Spreads downward to the trunk and extremities over 3 days.</li>
+                                <li><i class="fa-solid fa-fire text-rose-400 mr-2"></i> <strong>Note:</strong> Fever often peaks simultaneously with the eruption of the rash.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Convalescent Stage -->
+                        <div class="bg-slate-100 border-t-4 border-slate-400 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-xl font-black text-slate-800 mb-2">3. Convalescent Stage</h3>
+                            <p class="text-sm text-slate-700">
+                                The rash begins to fade in the exact same order that it appeared (top to bottom). As it fades, it leaves a brownish discoloration (<span class="reveal-text font-bold">hyperpigmentation</span>) and fine peeling of the skin (<span class="reveal-text font-bold">desquamation</span>).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Mnemonic Flip Card -->
+                    <div class="group h-40 w-full md:w-2/3 mx-auto cursor-pointer perspective-1000 mb-8">
+                        <div class="relative h-full w-full transition-all duration-500 transform-style-3d group-hover:rotate-y-180">
+                            <div class="absolute h-full w-full bg-orange-50 border-2 border-orange-200 rounded-xl shadow-md flex flex-col items-center justify-center backface-hidden">
+                                <p class="text-sm font-bold text-orange-600 uppercase tracking-widest mb-1"><i class="fa-solid fa-lightbulb mr-2"></i> Prodromal Signs</p>
+                                <h3 class="text-4xl font-black text-orange-800 tracking-widest mt-2">The 3 C's & a K</h3>
+                                <p class="text-xs text-orange-500 mt-3 animate-pulse">(Hover or Tap to Flip)</p>
+                            </div>
+                            <div class="absolute h-full w-full bg-orange-600 text-white rounded-xl shadow-lg flex flex-col items-center justify-center p-4 text-center backface-hidden rotate-y-180">
+                                <p class="font-bold text-xl leading-relaxed">
+                                    <span class="text-orange-200 font-black">C</span>ough<br>
+                                    <span class="text-orange-200 font-black">C</span>oryza (runny nose)<br>
+                                    <span class="text-orange-200 font-black">C</span>onjunctivitis<br>
+                                    <span class="text-orange-200 font-black">K</span>oplik Spots (Pathognomonic)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="openQuiz('clinical')" class="w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-theme-accent"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- COMPLICATIONS -->
+            <section id="complications" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 flex items-center border-b-2 border-red-600 pb-3">
+                        <i class="fa-solid fa-triangle-exclamation text-red-600 mr-4"></i> Measles Complications
+                    </h2>
+
+                    <p class="text-lg text-slate-700 mb-6 font-medium">Measles suppresses the immune system, leaving the body highly vulnerable to secondary bacterial and viral infections. Complications are most common in children <5 years and adults >20 years.</p>
+
+                    <div class="grid md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-sm col-span-1 md:col-span-1">
+                            <div class="text-red-500 mb-2"><i class="fa-solid fa-ear-listen text-3xl"></i></div>
+                            <h3 class="font-bold text-red-900 mb-2">Most Common</h3>
+                            <p class="text-xl font-black text-slate-800 mb-2"><span class="reveal-text">Otitis Media</span></p>
+                            <p class="text-sm text-slate-700">Middle ear infection is the most frequent complication of measles, which can lead to permanent hearing loss.</p>
+                        </div>
+
+                        <div class="bg-red-100 p-5 rounded-xl border border-red-300 shadow-md col-span-1 md:col-span-1 transform md:-translate-y-2">
+                            <div class="text-red-600 mb-2"><i class="fa-solid fa-lungs-virus text-4xl"></i></div>
+                            <h3 class="font-bold text-red-900 mb-2">Most Fatal (Leading Cause of Death)</h3>
+                            <p class="text-xl font-black text-slate-800 mb-2"><span class="reveal-text text-red-700">Pneumonia</span></p>
+                            <p class="text-sm text-slate-800 font-medium">Most measles-related deaths are due to respiratory complications (either primary viral pneumonia or secondary bacterial pneumonia).</p>
+                        </div>
+
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-300 shadow-sm col-span-1 md:col-span-1">
+                            <div class="text-slate-500 mb-2"><i class="fa-solid fa-brain text-3xl"></i></div>
+                            <h3 class="font-bold text-slate-800 mb-2">Neurological</h3>
+                            <p class="text-xl font-black text-slate-800 mb-2"><span class="reveal-text">Encephalitis</span></p>
+                            <p class="text-sm text-slate-700">Acute encephalitis can occur. A rare, fatal, late complication (years later) is SSPE (<span class="reveal-text font-bold text-xs">Subacute Sclerosing Panencephalitis</span>).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-sky-50 border-l-4 border-sky-500 p-4 rounded text-sm text-slate-700 mb-8">
+                        <i class="fa-solid fa-eye text-sky-600 mr-2"></i> <strong>Other complications:</strong> Corneal ulceration (leading to blindness, especially when compounded by Vitamin A deficiency), severe diarrhea, and croup.
+                    </div>
+
+                    <button onclick="openQuiz('complications')" class="w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-theme-accent"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- PREVENTION & NURSING CARE -->
+            <section id="prevention" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 flex items-center border-b-2 border-teal-500 pb-3">
+                        <i class="fa-solid fa-syringe text-teal-500 mr-4"></i> Prevention & Nursing Care
+                    </h2>
+
+                    <!-- Prevention -->
+                    <div class="bg-teal-50 rounded-xl p-6 border border-teal-200 mb-8 shadow-sm">
+                        <h3 class="text-2xl font-black text-teal-900 mb-4 flex items-center"><i class="fa-solid fa-shield-virus mr-2"></i> Primary Prevention: Vaccination</h3>
+                        <div class="bg-white p-4 rounded-lg border border-teal-100 grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-bold text-slate-800 mb-1">The Vaccine</h4>
+                                <p class="text-sm text-slate-700">Measles vaccine is a <span class="reveal-text font-bold text-teal-700">Live Attenuated</span> vaccine. It is usually given combined as MMR (Measles, Mumps, Rubella).</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 mb-1">EPI Schedule (Philippines)</h4>
+                                <ul class="text-sm text-slate-700 space-y-1">
+                                    <li><i class="fa-solid fa-calendar-check text-teal-500 mr-1"></i> 1st dose: <span class="reveal-text font-bold text-rose-600">9 months</span></li>
+                                    <li><i class="fa-solid fa-calendar-check text-teal-500 mr-1"></i> 2nd dose: <span class="reveal-text font-bold text-rose-600">12 - 15 months</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nursing Care & Management -->
+                    <h3 class="text-2xl font-black text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-user-nurse text-blue-500 mr-2"></i> Nursing Management</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Isolation -->
+                        <div class="border-l-4 border-rose-500 bg-slate-50 p-4 rounded-r-lg shadow-sm">
+                            <h4 class="font-bold text-rose-800 text-lg mb-1">1. Strict Airborne Precautions</h4>
+                            <p class="text-sm text-slate-700">Isolate the patient immediately. Use an N95 mask, negative pressure room if available in hospital. Keep child away from other children at home for at least <span class="reveal-text font-bold">4 days</span> after rash onset.</p>
+                        </div>
+
+                        <!-- Vitamin A -->
+                        <div class="border-l-4 border-amber-500 bg-slate-50 p-4 rounded-r-lg shadow-sm">
+                            <h4 class="font-bold text-amber-800 text-lg mb-1">2. Vitamin A Supplementation</h4>
+                            <p class="text-sm text-slate-700">WHO strictly recommends giving <span class="reveal-text font-bold">Vitamin A</span> to all children diagnosed with measles. It significantly reduces morbidity, blindness, and mortality rates by supporting immune function and epithelial integrity.</p>
+                        </div>
+
+                        <!-- Supportive Care -->
+                        <div class="border-l-4 border-blue-500 bg-slate-50 p-4 rounded-r-lg shadow-sm">
+                            <h4 class="font-bold text-blue-800 text-lg mb-1">3. Supportive / Symptomatic Care</h4>
+                            <ul class="text-sm text-slate-700 list-disc pl-5 space-y-1">
+                                <li><strong>Fever:</strong> Antipyretics (Paracetamol) and TSB. Avoid Aspirin in children to prevent Reye's syndrome.</li>
+                                <li><strong>Photophobia:</strong> Dim the lights in the room; encourage the child to wear sunglasses if needed.</li>
+                                <li><strong>Skin care:</strong> Keep skin clean and dry. Use mild, non-irritating soaps. Calamine lotion for itching.</li>
+                                <li><strong>Nutrition/Hydration:</strong> Soft, bland diet (buccal mucosa is inflamed from Koplik spots). Encourage oral fluids to prevent dehydration.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button onclick="openQuiz('prevention')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-theme-accent"></i> Take Quiz to Unlock Final Checkpoint</button>
+                </div>
+            </section>
+
+            <!-- FINAL QUIZ SECTION -->
+            <section id="final_quiz_sec" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
+                    <i class="fa-solid fa-graduation-cap text-8xl text-amber-400 mb-6 drop-shadow-md"></i>
+                    <h2 class="text-4xl font-black text-slate-800 mb-4">Module Complete</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-2xl">You have reviewed all the material regarding Measles (Rubeola). Take this final 10-item comprehensive checkpoint to ensure you've mastered the clinical concepts for the boards.</p>
+                    <button onclick="openQuiz('final_quiz')" class="w-full max-w-md bg-theme-dark text-white font-black py-4 rounded-xl shadow-md hover:bg-rose-800 transition-colors text-xl"><i class="fa-solid fa-flag-checkered mr-2"></i> Start Final Checkpoint</button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+             <button onclick="closeQuiz()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors focus:outline-none"><i class="fa-solid fa-xmark text-2xl"></i></button>
+             <h2 id="quiz-title" class="text-3xl font-black text-slate-800 mb-2"></h2>
+             <p class="text-slate-600 mb-6 font-medium border-b border-slate-200 pb-4">You must score at least <span class="font-bold text-rose-500">80%</span> to proceed.</p>
+             <div id="quiz-questions-container" class="space-y-6"></div>
+             <button id="quiz-submit-btn" onclick="submitQuiz()" class="mt-8 w-full bg-rose-600 text-white font-bold py-4 rounded-xl hover:bg-rose-700 transition-colors shadow-lg text-lg">Submit Answers</button>
+             <div id="quiz-result-container" class="hidden mt-6 text-center"></div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let unlockedSections = ['home'];
+
+        // Quiz Data
+        const quizzes = {
+            'intro': {
+                title: 'Agent & Transmission Check',
+                next: 'clinical',
+                questions: [
+                    { q: "What is the causative agent of Measles?", options: ["Togavirus", "Paramyxovirus", "Varicella-zoster", "Rhinovirus"], ans: 1 },
+                    { q: "What is another medical term for Measles?", options: ["Rubella", "Roseola", "Rubeola", "Erythema infectiosum"], ans: 2 },
+                    { q: "What type of transmission precaution is strictly required for a patient with measles?", options: ["Contact Precautions", "Droplet Precautions", "Airborne Precautions", "Standard Precautions only"], ans: 2 },
+                    { q: "How long is a patient generally communicable?", options: ["From the appearance of the rash until it fades", "4 days before to 4 days after the rash appears", "Only while the fever is present", "10 to 14 days after exposure"], ans: 1 },
+                    { q: "Which of the following describes the difference between Rubeola and Rubella?", options: ["Rubella is 'hard measles'; Rubeola is '3-day measles'.", "Rubeola is caused by Paramyxovirus; Rubella by Togavirus.", "Rubeola only affects pregnant women.", "They are exactly the same disease."], ans: 1 }
+                ]
+            },
+            'clinical': {
+                title: 'Clinical Manifestations Check',
+                next: 'complications',
+                questions: [
+                    { q: "What are the classic '3 C's' associated with the prodromal stage of measles?", options: ["Chills, Cough, Cyanosis", "Cough, Coryza, Conjunctivitis", "Colic, Constipation, Crying", "Coryza, Chest pain, Clubbing"], ans: 1 },
+                    { q: "What is the pathognomonic sign for Measles?", options: ["Koplik spots", "Strawberry tongue", "Pastia's lines", "Slapped cheek appearance"], ans: 0 },
+                    { q: "Where are Koplik spots typically found?", options: ["On the tonsils", "On the hard palate", "On the buccal mucosa opposite the molars", "On the posterior pharynx"], ans: 2 },
+                    { q: "In what direction does the measles maculopapular rash spread?", options: ["Centripetal (trunk to extremities)", "Centrifugal (extremities to trunk)", "Cephalocaudal (head to toe)", "Caudal to cephalic (toe to head)"], ans: 2 },
+                    { q: "What happens during the convalescent stage of the rash?", options: ["It turns into fluid-filled vesicles", "It leaves brownish hyperpigmentation and desquamates", "It becomes severely itchy and bleeds", "It disappears without a trace instantly"], ans: 1 }
+                ]
+            },
+            'complications': {
+                title: 'Complications Check',
+                next: 'prevention',
+                questions: [
+                    { q: "What is the most COMMON complication of measles?", options: ["Encephalitis", "Otitis Media", "Pneumonia", "Myocarditis"], ans: 1 },
+                    { q: "What is the most FATAL complication (leading cause of death) associated with measles?", options: ["Otitis Media", "Dehydration", "Pneumonia", "Corneal ulceration"], ans: 2 },
+                    { q: "What does SSPE stand for, a rare late neurological complication of measles?", options: ["Severe Systemic Pulmonary Edema", "Subacute Sclerosing Panencephalitis", "Sudden Sensorineural Prolonged Encephalopathy", "Systemic Sclerosis and Pleurisy"], ans: 1 },
+                    { q: "Measles suppresses the immune system, making the child highly vulnerable to:", options: ["Autoimmune diseases", "Secondary bacterial and viral infections", "Diabetes type 1", "Asthma"], ans: 1 },
+                    { q: "Blindness as a complication of measles is most often associated with a concurrent deficiency of:", options: ["Vitamin C", "Vitamin D", "Vitamin A", "Iron"], ans: 2 }
+                ]
+            },
+            'prevention': {
+                title: 'Prevention & Nursing Care Check',
+                next: 'final_quiz_sec',
+                questions: [
+                    { q: "What specific supplement is highly recommended by the WHO to reduce measles mortality?", options: ["Vitamin C", "Vitamin A", "Zinc", "Calcium"], ans: 1 },
+                    { q: "According to the EPI schedule in the Philippines, when is the first dose of the measles vaccine typically given?", options: ["At birth", "6 weeks", "9 months", "12 months"], ans: 2 },
+                    { q: "What type of vaccine is the Measles (MMR) vaccine?", options: ["Inactivated/Killed", "Toxoid", "Recombinant", "Live Attenuated"], ans: 3 },
+                    { q: "What nursing intervention is appropriate for a measles patient experiencing photophobia?", options: ["Apply bright overhead lights to examine the eyes", "Administer antibiotic eye drops immediately", "Dim the lights in the room", "Apply warm compresses to the eyes continuously"], ans: 2 },
+                    { q: "Why might a child with measles require a soft, bland diet?", options: ["To prevent diarrhea", "Because the buccal mucosa is inflamed and painful from Koplik spots", "Because they lose their sense of taste", "To prevent choking on mucus"], ans: 1 }
+                ]
+            },
+            'final_quiz': {
+                title: 'Final Comprehensive Checkpoint',
+                next: null,
+                questions: [
+                    { q: "A 10-month-old is brought to the clinic with a high fever, runny nose, cough, and red watery eyes. Upon oral assessment, the nurse notes tiny bluish-white spots inside the cheeks. What disease process does the nurse suspect?", options: ["Chickenpox", "Mumps", "Measles (Rubeola)", "German Measles (Rubella)"], ans: 2 },
+                    { q: "When describing the rash of Rubeola to a parent, the nurse explains that it usually starts where?", options: ["On the chest and back", "Behind the ears and upper neck", "On the palms and soles", "On the lower legs"], ans: 1 },
+                    { q: "A nurse is creating a care plan for a child with measles. Which nursing diagnosis is of the highest priority?", options: ["Risk for Infection related to immunosuppression", "Impaired Skin Integrity related to maculopapular rash", "Ineffective Airway Clearance related to pneumonia/secretions", "Deficient Knowledge related to disease process"], ans: 2 },
+                    { q: "Which isolation precaution must the nurse initiate for a patient admitted with suspected measles?", options: ["Droplet Precautions", "Airborne Precautions", "Contact Precautions", "Neutropenic Precautions"], ans: 1 },
+                    { q: "Which of the following statements about the Measles vaccine is TRUE?", options: ["It is a killed virus vaccine.", "It is given at birth.", "It is contraindicated for severe immunocompromised patients because it is live attenuated.", "It provides only 1 year of immunity."], ans: 2 },
+                    { q: "What is the primary rationale for administering Vitamin A to a child with measles?", options: ["To cure the viral infection directly", "To reduce morbidity, prevent blindness, and support immune function", "To lower the fever", "To make the rash fade faster"], ans: 1 },
+                    { q: "A mother asks when her child with measles can safely play with other children again. The nurse advises:", options: ["Immediately after the fever breaks.", "At least 4 days after the rash first appears.", "Once the rash has completely peeled off.", "24 hours after starting antibiotics."], ans: 1 },
+                    { q: "Which assessment finding alerts the nurse to the most common complication of measles?", options: ["Child is tugging at their ear and crying", "Child has a stiff neck", "Child has bloody diarrhea", "Child has a persistent dry cough"], ans: 0 },
+                    { q: "What distinguishes the 3 C's of measles?", options: ["Cough, Coryza, Conjunctivitis", "Cough, Cyanosis, Croup", "Chills, Conjunctivitis, Coryza", "Coryza, Chest retractions, Cough"], ans: 0 },
+                    { q: "During the convalescent stage, the nurse expects the patient's skin to exhibit:", options: ["Scarring and deep pitting", "Brownish hyperpigmentation and fine peeling (desquamation)", "Vesicular crusting", "Bright red erythema that is warm to touch"], ans: 1 }
+                ]
+            }
+        };
+
+        function unlockFirstSection() {
+            if(!unlockedSections.includes('intro')) {
+                unlockedSections.push('intro');
+                updateSidebarUI();
+            }
+            showSection('intro');
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            if (!unlockedSections.includes(sectionId) && sectionId !== 'home') {
+                alert("Please pass the quiz at the end of the previous section to unlock this content.");
+                return;
+            }
+
+            document.querySelectorAll('.content-section').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            const target = document.getElementById(sectionId);
+            if(target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-theme-light', 'text-theme-dark', 'border-r-4', 'border-theme-dark');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeBtn = document.getElementById('btn-' + sectionId);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-600');
+                activeBtn.classList.add('bg-theme-light', 'text-theme-dark', 'border-r-4', 'border-theme-dark');
+            }
+
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('hidden');
+                document.getElementById('sidebar').classList.remove('flex', 'absolute', 'h-full', 'z-50');
+            }
+            
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        function updateSidebarUI() {
+            const sections = ['home', 'intro', 'clinical', 'complications', 'prevention', 'final_quiz_sec'];
+            sections.forEach(sec => {
+                const btn = document.getElementById('btn-' + sec);
+                if (!btn) return;
+                
+                const lockIcon = btn.querySelector('.fa-lock');
+                const mainIcon = btn.querySelector('.nav-icon');
+
+                if (unlockedSections.includes(sec) || sec === 'home') {
+                    btn.classList.remove('locked-section');
+                    if (lockIcon) lockIcon.classList.add('hidden');
+                    if (mainIcon) mainIcon.classList.remove('hidden');
+                } else {
+                    btn.classList.add('locked-section');
+                    if (lockIcon) lockIcon.classList.remove('hidden');
+                    if (mainIcon) mainIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        let currentQuizSection = null;
+
+        // Quiz Handling
+        function openQuiz(sectionId) {
+            currentQuizSection = sectionId;
+            const qData = quizzes[sectionId];
+            if(!qData) return;
+            
+            document.getElementById('quiz-title').innerText = qData.title;
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+            
+            qData.questions.forEach((q, index) => {
+                let html = `<div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="font-bold text-slate-800 mb-3 text-lg">${index + 1}. ${q.q}</p>
+                    <div class="space-y-2">`;
+                q.options.forEach((opt, oIndex) => {
+                    html += `<label class="flex items-start space-x-3 p-3 rounded-lg border border-transparent hover:border-rose-500 hover:bg-rose-50 cursor-pointer transition-colors">
+                        <input type="radio" name="q${index}" value="${oIndex}" class="form-radio text-rose-600 focus:ring-rose-500 h-5 w-5 mt-0.5">
+                        <span class="text-slate-700 font-medium">${opt}</span>
+                    </label>`;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+            
+            document.getElementById('quiz-submit-btn').classList.remove('hidden');
+            document.getElementById('quiz-result-container').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.remove('hidden');
+        }
+
+        function closeQuiz() {
+            document.getElementById('quiz-modal').classList.add('hidden');
+        }
+
+        function submitQuiz() {
+            const qData = quizzes[currentQuizSection];
+            let score = 0;
+            
+            for(let i=0; i<qData.questions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if(selected && parseInt(selected.value) === qData.questions[i].ans) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / qData.questions.length) * 100;
+            const resultContainer = document.getElementById('quiz-result-container');
+            const submitBtn = document.getElementById('quiz-submit-btn');
+            
+            submitBtn.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+            
+            if(percentage >= 80) {
+                if (currentQuizSection === 'final_quiz') {
+                    resultContainer.innerHTML = `
+                        <div class="text-amber-500 mb-4 animate-bounce"><i class="fa-solid fa-trophy text-6xl drop-shadow-md"></i></div>
+                        <h3 class="text-3xl font-black text-slate-800">Module Mastered!</h3>
+                        <p class="text-xl font-bold text-slate-600 mt-2">You scored ${score}/${qData.questions.length} (${percentage}%)</p>
+                        <p class="text-amber-700 mt-3 font-medium bg-amber-50 py-2 rounded-lg border border-amber-200">You are ready to tackle Measles questions on the board exam!</p>
+                        <button onclick="closeQuiz()" class="mt-6 w-full bg-slate-800 text-white font-black py-4 rounded-xl hover:bg-slate-900 shadow-md text-lg transition-transform hover:scale-[1.02]">Close Exam</button>
+                    `;
+                    return;
+                }
+
+                if(qData.next && !unlockedSections.includes(qData.next)) {
+                    unlockedSections.push(qData.next);
+                    updateSidebarUI(); 
+                }
+                
+                let btnAction = `<button onclick="closeQuiz(); showSection('${qData.next}')" class="mt-6 w-full bg-rose-600 text-white font-black py-4 rounded-xl hover:bg-rose-700 shadow-md text-lg transition-transform hover:scale-[1.02]">Proceed to Next Section <i class="fa-solid fa-arrow-right ml-2"></i></button>`;
+                
+                resultContainer.innerHTML = `
+                    <div class="text-emerald-500 mb-4 animate-bounce"><i class="fa-solid fa-circle-check text-6xl drop-shadow-md"></i></div>
+                    <h3 class="text-3xl font-black text-slate-800">Passed!</h3>
+                    <p class="text-xl font-bold text-slate-600 mt-2">You scored ${score}/${qData.questions.length} (${percentage}%)</p>
+                    <p class="text-emerald-700 mt-3 font-medium bg-emerald-50 py-2 rounded-lg border border-emerald-200">Great job. You have unlocked the next section.</p>
+                    ${btnAction}
+                `;
+            } else {
+                resultContainer.innerHTML = `
+                    <div class="text-red-500 mb-4"><i class="fa-solid fa-circle-xmark text-6xl drop-shadow-md"></i></div>
+                    <h3 class="text-3xl font-black text-slate-800">Try Again</h3>
+                    <p class="text-xl font-bold text-slate-600 mt-2">You scored ${score}/${qData.questions.length} (${percentage}%)</p>
+                    <p class="text-red-700 mt-3 font-medium bg-red-50 py-2 rounded-lg border border-red-200">You need at least 80% to proceed. Please review the material and try again.</p>
+                    <button onclick="openQuiz('${currentQuizSection}')" class="mt-6 w-full bg-slate-200 text-slate-800 font-black py-4 rounded-xl hover:bg-slate-300 shadow-md text-lg transition-colors"><i class="fa-solid fa-rotate-right mr-2"></i> Retake Quiz</button>
+                `;
+            }
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex', 'absolute', 'h-full', 'z-50');
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex', 'absolute', 'h-full', 'z-50');
+            }
+        }
+
+        // Active Recall
+        let recallModeActive = false;
+        function toggleRecallMode() {
+            recallModeActive = !recallModeActive;
+            const toggle = document.getElementById('recall-toggle');
+            const knob = document.getElementById('recall-knob');
+            const revealTexts = document.querySelectorAll('.reveal-text');
+
+            if (recallModeActive) {
+                toggle.classList.remove('bg-slate-300');
+                toggle.classList.add('bg-theme-dark');
+                knob.classList.add('translate-x-6');
+                document.body.classList.add('recall-mode');
+                revealTexts.forEach(el => el.classList.remove('revealed'));
+            } else {
+                toggle.classList.add('bg-slate-300');
+                toggle.classList.remove('bg-theme-dark');
+                knob.classList.remove('translate-x-6');
+                document.body.classList.remove('recall-mode');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal-text').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (recallModeActive) {
+                        this.classList.toggle('revealed');
+                    }
+                });
+            });
+            updateSidebarUI();
+        });
+    </script>
+</body>
+</html>
